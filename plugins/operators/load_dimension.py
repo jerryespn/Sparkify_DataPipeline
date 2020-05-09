@@ -1,3 +1,7 @@
+# Sparkify - Data Engineer Nanodegree program Sparkify Data Pipeline
+# By JGEL
+# May 2020
+
 from airflow.hooks.postgres_hook import PostgresHook
 from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
@@ -5,18 +9,50 @@ from airflow.utils.decorators import apply_defaults
 class LoadDimensionOperator(BaseOperator):
 
     ui_color = '#80BD9E'
+    
+    insert_dimdata = (
+        """
+        INSERT INTO {table} (
+            {fields}
+        )
+        {load_dimension}
+        """
+    )
 
     @apply_defaults
     def __init__(self,
-                 # Define your operators params (with defaults) here
-                 # Example:
-                 # conn_id = your-connection-name
+                 conn_id = "redshift",
+                 table = "",
+                 fileds = "",
+                 load_dimension = "",
+                 appen_only = False,
                  *args, **kwargs):
 
         super(LoadDimensionOperator, self).__init__(*args, **kwargs)
-        # Map params here
-        # Example:
-        # self.conn_id = conn_id
+        self.redshift_conn_id = conn_id
+        self.table = table
+        self.fields = fields
+        self.load_dimension = load_dimension
+        self.append_only = append_only
 
     def execute(self, context):
-        self.log.info('LoadDimensionOperator not implemented yet')
+        """
+        Data load into dimension tables from staging events and staging songs
+        :param conn_id -> connection to redshift
+        :param table -> table at reshift cluster
+        :param -> sql -> query to insert data
+        """
+        redshift = PostgresHook (self.redshift_conn_id)
+
+        if self.append_only == False:
+            self.log.info(f"Truncating {self.table}")
+            redshift.run(f"TRUNCATE TABLE {self.table}")
+        
+        insert_data = LoadDimensionOperator.insert_dimdata.format(
+            table = self.table,
+            fields = self.fields,
+            load_dimension = self.load_dimension
+        )
+
+        self.log.info('Loading Dimension Data')
+        redshift.run(insert_data)

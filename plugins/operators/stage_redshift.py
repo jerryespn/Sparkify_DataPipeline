@@ -26,7 +26,7 @@ class StageToRedshiftOperator(BaseOperator):
                  destination_table = "",
                  fact_column = "",
                  groupby_column = "",
-                 append_data = false
+                 append_data = False
                  *args, **kwargs):
 
         super(StageToRedshiftOperator, self).__init__(*args, **kwargs)
