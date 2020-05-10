@@ -1,7 +1,3 @@
-# Sparkify - Data Engineer Nanodegree program Sparkify Data Pipeline
-# By JGEL
-# May 2020
-
 from airflow.hooks.postgres_hook import PostgresHook
 from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults

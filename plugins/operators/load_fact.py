@@ -1,7 +1,3 @@
-# Sparkify - Data Engineer Nanodegree program Sparkify Data Pipeline
-# By JGEL
-# May 2020
-
 from airflow.hooks.postgres_hook import PostgresHook
 from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
@@ -18,7 +14,7 @@ class LoadFactOperator(BaseOperator):
                  *args, **kwargs):
 
         super(LoadFactOperator, self).__init__(*args, **kwargs)
-        self.conn_id = conn_id
+        self.redshift_conn_id = conn_id
         self.table = table
         self.sql = sql
 
@@ -29,8 +25,8 @@ class LoadFactOperator(BaseOperator):
         :param table -> target table located in redshift
         :param sql -> sql command
         """
-        postgres_hook = PostgresHook(self.conn_id)
+        redshift = PostgresHook(self.redshift_conn_id)
         self.log.info(f"Starting to Load Data into redshift table: {self.table}")
         load_sql = f"INSERT INTO {self.table} ({self.sql})"
-        postgres_hook.run(load_sql)
+        redshift.run(load_sql)
         self.log.info(f"Success: {self.task_id} loaded.")
