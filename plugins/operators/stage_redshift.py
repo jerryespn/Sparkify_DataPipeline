@@ -7,27 +7,28 @@ class StageToRedshiftOperator(BaseOperator):
     ui_color = '#358140'
 
     template_fields = ("s3_key",)
-    copy_sql_data = """
+    copy_sql_data = ("""
         COPY {table}
         FROM '{s3_path}'
         ACCESS_KEY_ID '{key_id}'
         SECRET_ACCESS_KEY '{access_key}'
         FORMAT AS {file_format} 
-    """
+    """)
 
     @apply_defaults
     def __init__(self,
                  redshift_conn_id = "",
-                 origin_table = "",
-                 destination_table = "",
-                 fact_column = "",
-                 groupby_column = "",
-                 append_data = False
+                 aws_credentials_id = "",
+                 table = "",
+                 s3_bucket = "",
+                 s3_key = "",
+                 file_format = "",
+                 append_data = False,
                  *args, **kwargs):
 
         super(StageToRedshiftOperator, self).__init__(*args, **kwargs)
         self.redshift_conn_id = redshift_conn_id
-        self.aws_credentials_id = aws_credentials_id
+        self.aws_crendentials_id = aws_credentials_id
         self.table = table
         self.s3_bucket = s3_bucket
         self.s3_key = s3_key
