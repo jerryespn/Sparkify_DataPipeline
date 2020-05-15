@@ -13,12 +13,12 @@ class DataQualityOperator(BaseOperator):
                  *args, **kwargs):
 
         super(DataQualityOperator, self).__init__(*args, **kwargs)
-        self.redshift_conn_id = conn_id
+        self.conn_id = conn_id
         self.tables = tables
 
     def execute(self, context):
         # Redshift Connection
-        redshift = PostgresHook(postgres_conn_id = self.redshift_conn_id)
+        redshift = PostgresHook(self.conn_id)
 
         # DQ Validation
 

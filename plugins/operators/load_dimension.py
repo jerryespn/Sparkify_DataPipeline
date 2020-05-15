@@ -19,13 +19,13 @@ class LoadDimensionOperator(BaseOperator):
     def __init__(self,
                  conn_id = "redshift",
                  table = "",
-                 fileds = "",
+                 fields = "",
                  load_dimension = "",
-                 appen_only = False,
+                 append_only = False,
                  *args, **kwargs):
 
         super(LoadDimensionOperator, self).__init__(*args, **kwargs)
-        self.redshift_conn_id = conn_id
+        self.conn_id = conn_id
         self.table = table
         self.fields = fields
         self.load_dimension = load_dimension
@@ -38,7 +38,7 @@ class LoadDimensionOperator(BaseOperator):
         :param table -> table at reshift cluster
         :param -> sql -> query to insert data
         """
-        redshift = PostgresHook (self.redshift_conn_id)
+        redshift = PostgresHook (self.conn_id)
 
         if self.append_only == False:
             self.log.info(f"Truncating {self.table}")

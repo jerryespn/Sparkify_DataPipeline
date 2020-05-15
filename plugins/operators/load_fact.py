@@ -10,12 +10,14 @@ class LoadFactOperator(BaseOperator):
     def __init__(self,
                  conn_id = "redshift",
                  table = "",
+                 fields = "",
                  sql = "",
                  *args, **kwargs):
 
         super(LoadFactOperator, self).__init__(*args, **kwargs)
-        self.redshift_conn_id = conn_id
+        self.conn_id = conn_id
         self.table = table
+        self.fields =  fields
         self.sql = sql
 
     def execute(self, context):
@@ -25,7 +27,7 @@ class LoadFactOperator(BaseOperator):
         :param table -> target table located in redshift
         :param sql -> sql command
         """
-        redshift = PostgresHook(self.redshift_conn_id)
+        redshift = PostgresHook(self.conn_id)
         self.log.info(f"Starting to Load Data into redshift table: {self.table}")
         load_sql = (f"INSERT INTO {self.table} ({self.sql})")
         redshift.run(load_sql)

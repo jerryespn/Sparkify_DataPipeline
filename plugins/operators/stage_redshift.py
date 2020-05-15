@@ -41,7 +41,7 @@ class StageToRedshiftOperator(BaseOperator):
         credentials = aws_hook.get_credentials()
 
         self.log.info('Connecting to redshift')
-        redshift = PostgresHook(postgres_conn_id = self.redshift_conn_id)
+        redshift = PostgresHook(self.redshift_conn_id)
 
         # Clearing table if there is data
         if self.append_data == False:

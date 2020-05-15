@@ -72,6 +72,7 @@ load_songplays_table = LoadFactOperator(
     task_id = 'Load_songplays_fact_table',
     dag = dag,
     table = 'songplays',
+    fields = 'playid, start_time, userid, level, songid, artistid, sessionid, location, user_agent',
     conn_id = 'redshift',
     sql = SqlQueries.songplay_table_insert
 )
