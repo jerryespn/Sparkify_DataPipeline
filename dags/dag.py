@@ -11,9 +11,6 @@ from airflow.operators import (StageToRedshiftOperator, LoadFactOperator,
                                 LoadDimensionOperator, DataQualityOperator)
 from helpers import SqlQueries
 
-AWS_KEY = os.environ.get('AWS_KEY')
-AWS_SECRET = os.environ.get('AWS_SECRET')
-
 # DAG default configuration
 default_args = {
     'owner': 'jerryespn',
@@ -50,7 +47,8 @@ stage_events_to_redshift = StageToRedshiftOperator(
     conn_id = 'redshift',
     aws_credentials_id = 'aws_credentials',
     s3_bucket = 'udacity-dend',
-    s3_key = 'log-data/{execution_date.year}/{execution_date.month:02d}',
+    s3_key = 'log_data/',
+    #s3_key = 'log_data/{execution_date.year}/{execution_date.month:02d}',
     table = 'staging_events',
     file_format = 'JSON \'s3://udacity-dend/log_json_path.json\''
 )
@@ -110,8 +108,8 @@ load_artist_dimension_table = LoadDimensionOperator(
 load_time_dimension_table = LoadDimensionOperator(
     task_id = 'Load_time_dim_table',
     dag = dag,
-    table = 'times',
-    fields = 'start_time, hour, day, week, month, year, week_day',
+    table = 'time',
+    fields = 'start_time, hour, day, week, month, year, weekday',
     redshift_conn_id = 'redshift',
     load_dimension = SqlQueries.time_table_insert,
     append_data = False
@@ -120,8 +118,8 @@ load_time_dimension_table = LoadDimensionOperator(
 run_quality_checks = DataQualityOperator(
     task_id = 'Run_data_quality_checks',
     dag = dag,
-    tables = ['songplays', 'songs', 'artists', 'users', 'times'],
-    redshift_conn_id = 'redshift',
+    tables = ['songplays', 'songs', 'artists', 'users', 'time'],
+    conn_id = 'redshift',
 )
 
 end_operator = DummyOperator(task_id = 'Stop_execution',  dag=dag)

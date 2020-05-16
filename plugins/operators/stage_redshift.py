@@ -17,7 +17,7 @@ class StageToRedshiftOperator(BaseOperator):
 
     @apply_defaults
     def __init__(self,
-                 redshift_conn_id = "",
+                 conn_id = "",
                  aws_credentials_id = "",
                  table = "",
                  s3_bucket = "",
@@ -27,8 +27,8 @@ class StageToRedshiftOperator(BaseOperator):
                  *args, **kwargs):
 
         super(StageToRedshiftOperator, self).__init__(*args, **kwargs)
-        self.redshift_conn_id = redshift_conn_id
-        self.aws_crendentials_id = aws_credentials_id
+        self.conn_id = conn_id
+        self.aws_credentials_id = aws_credentials_id
         self.table = table
         self.s3_bucket = s3_bucket
         self.s3_key = s3_key
@@ -41,7 +41,7 @@ class StageToRedshiftOperator(BaseOperator):
         credentials = aws_hook.get_credentials()
 
         self.log.info('Connecting to redshift')
-        redshift = PostgresHook(self.redshift_conn_id)
+        redshift = PostgresHook(self.conn_id)
 
         # Clearing table if there is data
         if self.append_data == False:

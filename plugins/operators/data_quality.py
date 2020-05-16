@@ -8,8 +8,8 @@ class DataQualityOperator(BaseOperator):
 
     @apply_defaults
     def __init__(self,
-                 conn_id="",
-                 tables=[],
+                 conn_id = "",
+                 tables = [],
                  *args, **kwargs):
 
         super(DataQualityOperator, self).__init__(*args, **kwargs)
